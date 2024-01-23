@@ -6,7 +6,7 @@ import OrderInMemoryRepository from '../../utils/repositoryInMemory/OrderInMemor
 
 const orderRepository = new OrderInMemoryRepository();
 
-Given('inicio a listagem de queue sem passar o id', async function () {
+Given('inicio a listagem de pedidos sem nenhum pedidos', async function () {
   this.result = await new ListUseCase(orderRepository).execute();
 });
 
