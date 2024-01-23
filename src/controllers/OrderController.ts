@@ -1,6 +1,10 @@
-import { Order } from "@entities/Order";
+import { Order, OrderPaymentStatus, OrderStatus } from "@entities/Order";
 import CreateUseCase from "@useCases/CreateUseCase";
 import IOrderRepository from "../ports/IOrderRepository";
+import GetByIdUseCase from "@useCases/GetByIdUseCase";
+import ListUseCase from "@useCases/ListUseCase";
+import UpdateStatusUseCase from "@useCases/UpdateStatusUseCase";
+import UpdatePaymentStatysUseCase from "@useCases/UpdatePaymentStatusUseCase";
 
 export default class OrderController {
 	static async checkout(products: Array<number>, cpf: string, orderRepository: IOrderRepository) {
@@ -12,39 +16,41 @@ export default class OrderController {
 		return { Pedido: result?.id };
 	}
 
-	// static async list(orderRepository: IOrderRepository) {
-	// 	const listOrder = new ListUseCase(orderRepository);
-	// 	const result = await listOrder.execute();
+	static async list(orderRepository: IOrderRepository) {
+		const listOrder = new ListUseCase(orderRepository);
+		const result = await listOrder.execute();
 
-	// 	if (listOrder.hasErrors()) throw listOrder.getErrors();
+		if (listOrder.hasErrors()) throw listOrder.getErrors();
 
-	// 	return result;
-	// }
+		return result;
+	}
 
-	// static async handlePaymentWebhook(orderId: number, paymentStatusGateway: IPaymentStatusGateway, orderRepository: IOrderRepository) {
-	// 	const updatePaymentStatus = new UpdatePaymentStatusUseCase(orderRepository);
+	static async getByPaymentStatus(orderId: number, orderRepository: IOrderRepository) {
+		const getPaymentStatus = new GetByIdUseCase(orderRepository);
+		const result = await getPaymentStatus.execute(orderId);
 
-	// 	await updatePaymentStatus.execute(orderId, paymentStatusGateway);
+		if (getPaymentStatus.hasErrors()) throw getPaymentStatus.getErrors();
 
-	// 	if (updatePaymentStatus.hasErrors()) throw updatePaymentStatus.getErrors();
-	// }
+		return result;
+	}
 
-	// static async getPaymentStatus(orderId: number, orderRepository: IOrderRepository) {
-	// 	const getPaymentStatus = new GetOrderPaymentStatus(orderRepository);
-	// 	const result = await getPaymentStatus.execute(orderId);
+	static async updateStatus(orderId: number, orderStatus: OrderStatus, orderRepository: IOrderRepository) {
+		const updateStatusUseCase = new UpdateStatusUseCase(orderRepository);
 
-	// 	if (getPaymentStatus.hasErrors()) throw getPaymentStatus.getErrors();
+		await updateStatusUseCase.execute(orderId, orderStatus);
 
-	// 	return result;
-	// }
+		if (updateStatusUseCase.hasErrors()) {
+			throw updateStatusUseCase.getErrors();
+		}
+	}
 
-	// static async updateStatus(orderId: number, orderStatus: OrderStatus, orderRepository: IOrderRepository) {
-	// 	const updateStatusUseCase = new UpdateStatusUseCase(orderRepository);
+	static async updatePaymentStatus(orderId: number, paymentStatus: OrderPaymentStatus, orderRepository: IOrderRepository) {
+		const updatePaymentStatusUseCase = new UpdatePaymentStatysUseCase(orderRepository);
 
-	// 	await updateStatusUseCase.execute(orderId, orderStatus);
+		await updatePaymentStatusUseCase.execute(orderId, paymentStatus);
 
-	// 	if (updateStatusUseCase.hasErrors()) {
-	// 		throw updateStatusUseCase.getErrors();
-	// 	}
-	// }
+		if (updatePaymentStatusUseCase.hasErrors()) {
+			throw updatePaymentStatusUseCase.getErrors();
+		}
+	}
 }
