@@ -8,20 +8,17 @@ import assert from "assert";
 const mockedOrder: Order = ({
   customerId: "12345678912",
   products: [1, 2, 3],
-  status: OrderStatus.RECEBIDO,
-  id: 1,
 });
 
 const orderRepository = new OrderInMemoryRepository();
 const createUseCase = new CreateUseCase(orderRepository);
 let getByIdUseCase = new GetByIdUseCase(orderRepository);
 
-Given('inicio a obtenção do pedido passando o id {int} como parametro', async function (int) {
-  if (int == 1) {
-    await saveMockOrder(mockedOrder);
-  }
+Given('inicio a obtenção do pedido existente passando o id como parametro', async function () {
+  let createdOrder: Order | null;
+  createdOrder = await saveMockOrder(mockedOrder);
   getByIdUseCase = new GetByIdUseCase(orderRepository);
-  this.result = [await getByIdUseCase.execute(int)];
+  this.result = [await getByIdUseCase.execute(createdOrder?.id || 0)];
 });
 
 Then('o resultado deve ser de sucesso', function () {
@@ -30,6 +27,11 @@ Then('o resultado deve ser de sucesso', function () {
 
 Then('deve retornar {int} item', function (int) {
   return assert.equal(this.result.length, int);
+});
+
+Given('inicio a obtenção do pedido passando o id inesistente como parâmetro', async function () {
+  getByIdUseCase = new GetByIdUseCase(orderRepository);
+  this.result = [await getByIdUseCase.execute(0)];
 });
 
 Then('o resultado deve retornar erro', function () {

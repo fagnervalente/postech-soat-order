@@ -7,7 +7,7 @@ COPY yarn.lock ./
 
 RUN npm install -g yarn --force
 
-RUN yarn install
+RUN yarn install --ignore-scripts
 
 COPY . .
 

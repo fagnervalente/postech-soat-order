@@ -1,4 +1,5 @@
 import { Order, OrderPaymentStatus } from "@entities/Order";
+import schema from "@validation/createOrderBody";
 import IOrderRepository from "@ports/IOrderRepository";
 import AbstractUseCase from "./AbstractUseCase";
 import Calculator from "src/domain/rules/Calculator";
@@ -13,6 +14,8 @@ export default class CreateUseCase extends AbstractUseCase {
 		const orderCustomer = await this.getParsedCustomer(order);
 		const orderProducts = await this.getParsedProducts(order);
 
+		this.validateSchema(schema, order);
+		
 		if (this.hasErrors()) {
 			return null;
 		}
@@ -35,11 +38,6 @@ export default class CreateUseCase extends AbstractUseCase {
 	}
 
 	private async getParsedProducts(order: Order): Promise<number[] | undefined> {
-		if (!order.products || order.products.length === 0) {
-			this.setError({ message: "Order must have at least one product" });
-			return undefined;
-		}
-
 		let productValues: number[] = [];
 		order.totalPrice = Calculator.calculateOrderTotalPrice(productValues);
 
