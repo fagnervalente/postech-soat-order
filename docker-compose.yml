@@ -24,8 +24,8 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    ports:
-      - "${ORDER_PORT}:${ORDER_PORT}"
+    expose:
+      - ${ORDER_PORT}
     volumes:
       - .:/usr/app
     environment:
