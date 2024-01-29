@@ -24,17 +24,17 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    expose:
-      - ${ORDER_PORT}
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
     volumes:
       - .:/usr/app
     environment:
-      - SERVER_PORT=${ORDER_PORT}
-      - DATABASE_HOST=mongo
-      - DATABASE_USER=${DATABASE_USER}
-      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-      - DATABASE_NAME=${DATABASE_NAME}
-      - DATABASE_PORT=${DATABASE_PORT}
+      - SERVER_PORT=${SERVER_PORT}
+      - DATABASE_MONGO_HOST=mongo
+      - DATABASE_MONGO_USER=${DATABASE_MONGO_USER}
+      - DATABASE_MONGO_PASSWORD=${DATABASE_MONGO_PASSWORD}
+      - DATABASE_MONGO_NAME=${DATABASE_MONGO_NAME}
+      - DATABASE_MONGO_PORT=${DATABASE_MONGO_PORT}
     depends_on:
       mongo:
         condition: service_healthy
