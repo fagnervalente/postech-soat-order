@@ -1,4 +1,4 @@
-version: '3.4'
+version: "3.4"
 
 services:
   mongo:
@@ -25,11 +25,11 @@ services:
       context: .
       dockerfile: ./Dockerfile
     ports:
-      - "${SERVER_PORT}:${SERVER_PORT}"
+      - "${ORDER_PORT}:${ORDER_PORT}"
     volumes:
       - .:/usr/app
     environment:
-      - SERVER_PORT=${SERVER_PORT}
+      - SERVER_PORT=${ORDER_PORT}
       - DATABASE_HOST=mongo
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
