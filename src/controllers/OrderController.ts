@@ -25,7 +25,7 @@ export default class OrderController {
 		return result;
 	}
 
-	static async getByPaymentStatus(orderId: number, orderRepository: IOrderRepository) {
+	static async getByPaymentStatus(orderId: string, orderRepository: IOrderRepository) {
 		const getPaymentStatus = new GetByIdUseCase(orderRepository);
 		const result = await getPaymentStatus.execute(orderId);
 
@@ -34,7 +34,7 @@ export default class OrderController {
 		return result;
 	}
 
-	static async updateStatus(orderId: number, orderStatus: OrderStatus, orderRepository: IOrderRepository) {
+	static async updateStatus(orderId: string, orderStatus: OrderStatus, orderRepository: IOrderRepository) {
 		const updateStatusUseCase = new UpdateStatusUseCase(orderRepository);
 
 		await updateStatusUseCase.execute(orderId, orderStatus);
@@ -44,7 +44,7 @@ export default class OrderController {
 		}
 	}
 
-	static async updatePaymentStatus(orderId: number, paymentStatus: OrderPaymentStatus, orderRepository: IOrderRepository) {
+	static async updatePaymentStatus(orderId: string, paymentStatus: OrderPaymentStatus, orderRepository: IOrderRepository) {
 		const updatePaymentStatusUseCase = new UpdatePaymentStatysUseCase(orderRepository);
 
 		await updatePaymentStatusUseCase.execute(orderId, paymentStatus);

@@ -1,12 +1,11 @@
 import { AppDataSource } from "../data-source";
 import IOrderRepository from "@ports/IOrderRepository";
 import { OrderModel, OrderStatus } from "@database/models/OrderModel";
-import { Not } from "typeorm";
 import { Order } from "@entities/Order";
 
 export default class OrderDatabaseRepository implements IOrderRepository {
 
-  orderRepository = AppDataSource.getRepository(OrderModel);
+  orderRepository = AppDataSource.getMongoRepository(OrderModel);
 
   async save(order: Order): Promise<Order> {
     const newOrder = this.orderRepository.create(order);
@@ -15,13 +14,10 @@ export default class OrderDatabaseRepository implements IOrderRepository {
 
   list(): Promise<Order[]> {
     return this.orderRepository.find({
-      where: [{
-        status: Not(OrderStatus.FINALIZADO)
-      }],
-      order: {
-        status: "DESC",
-        id: "DESC",
+      where: {
+        status: { $not: { $in: [OrderStatus.FINALIZADO.valueOf()] } },
       },
+      order: { status: 'DESC', id: 'DESC' }
     });
   }
 
@@ -31,8 +27,8 @@ export default class OrderDatabaseRepository implements IOrderRepository {
     return;
   }
 
-  async findById(id: number): Promise<Order | null> {
-    return await this.orderRepository.findOneBy({ id });
+  async findById(id: string): Promise<Order | null> {
+    return await this.orderRepository.findOneBy(id);
   }
 
 }

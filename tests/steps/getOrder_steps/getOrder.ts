@@ -18,7 +18,7 @@ Given('inicio a obtenção do pedido existente passando o id como parametro', as
   let createdOrder: Order | null;
   createdOrder = await saveMockOrder(mockedOrder);
   getByIdUseCase = new GetByIdUseCase(orderRepository);
-  this.result = [await getByIdUseCase.execute(createdOrder?.id || 0)];
+  this.result = [await getByIdUseCase.execute(createdOrder?.id || "0")];
 });
 
 Then('o resultado deve ser de sucesso', function () {
@@ -31,7 +31,7 @@ Then('deve retornar {int} item', function (int) {
 
 Given('inicio a obtenção do pedido passando o id inesistente como parâmetro', async function () {
   getByIdUseCase = new GetByIdUseCase(orderRepository);
-  this.result = [await getByIdUseCase.execute(0)];
+  this.result = [await getByIdUseCase.execute("0")];
 });
 
 Then('o resultado deve retornar erro', function () {

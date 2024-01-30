@@ -12,7 +12,7 @@ export enum OrderPaymentStatus {
 }
 
 export class Order {
-  id?: number;
+  id?: string;
   status?: OrderStatus;
   paymentStatus?: OrderPaymentStatus;
   products: number[];

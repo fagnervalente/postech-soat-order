@@ -50,7 +50,7 @@ export default class OrderAPIController {
 	async getByPaymentStatus(req: Request, res: Response) {
 		// #swagger.tags = ['Order']
 		// #swagger.description = 'Endpoint que retorna o status de pagamento de um pedido.'
-		const orderId = Number(req.params.id);
+		const orderId = req.params.id;
 
 		OrderController.getByPaymentStatus(orderId, orderRepository)
 			.then((result: any) => {
@@ -68,7 +68,7 @@ export default class OrderAPIController {
 	async updateStatus(req: Request, res: Response) {
 		// #swagger.tags = ['Order']
 		// #swagger.description = 'Endpoint para atualizar status de um pedido.'
-		const orderId = Number(req.params.id);
+		const orderId = req.params.id;
 		const orderStatus = req.body.status as OrderStatus;
 
 		OrderController.updateStatus(orderId, orderStatus, orderRepository)
@@ -86,7 +86,7 @@ export default class OrderAPIController {
 	async updatePaymentStatus(req: Request, res: Response) {
 		// #swagger.tags = ['Order']
 		// #swagger.description = 'Endpoint para atualizar status do pagamento de um pedido.'
-		const orderId = Number(req.params.id);
+		const orderId = req.params.id;
 		const paymentStatus = req.body.status as OrderPaymentStatus;
 
 		OrderController.updatePaymentStatus(orderId, paymentStatus, orderRepository)

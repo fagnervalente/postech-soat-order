@@ -8,7 +8,7 @@ export default class UpdatePaymentStatysUseCase extends AbstractUseCase {
 		super(orderRepository);
 	}
 
-	async execute(orderId: number, paymentStatus: OrderPaymentStatus): Promise<Order | null> {
+	async execute(orderId: string, paymentStatus: OrderPaymentStatus): Promise<Order | null> {
 		this.validateOrder(orderId);
 		this.validateStatus(paymentStatus);
 
@@ -20,7 +20,7 @@ export default class UpdatePaymentStatysUseCase extends AbstractUseCase {
 		return await this.orderRepository.save(order!);
 	}
 
-	private async validateOrder(id: number) {
+	private async validateOrder(id: string) {
 		const found = await this.orderRepository.findById(id);
 		if (!found) this.setError({ message: "Order not found" });
 	}

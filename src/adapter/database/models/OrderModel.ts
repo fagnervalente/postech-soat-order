@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ObjectIdColumn } from 'typeorm';
 
 export enum OrderStatus {
   RECEBIDO = "Recebido",
@@ -15,8 +15,8 @@ export enum OrderPaymentStatus {
 
 @Entity('orders')
 export class OrderModel {
-  @PrimaryGeneratedColumn()
-  id?: number;
+  @ObjectIdColumn()
+  id?: string;
 
   @Column({
     type: "enum",
@@ -42,7 +42,7 @@ export class OrderModel {
   totalPrice?: number;
 
   constructor(
-    id: number | undefined,
+    id: string | undefined,
     status: OrderStatus | undefined,
     paymentStatus: OrderPaymentStatus | undefined,
     products: number[],

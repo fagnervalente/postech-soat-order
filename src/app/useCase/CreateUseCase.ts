@@ -1,4 +1,4 @@
-import { Order, OrderPaymentStatus } from "@entities/Order";
+import { Order, OrderPaymentStatus, OrderStatus } from "@entities/Order";
 import schema from "@validation/createOrderBody";
 import IOrderRepository from "@ports/IOrderRepository";
 import AbstractUseCase from "./AbstractUseCase";
@@ -15,7 +15,7 @@ export default class CreateUseCase extends AbstractUseCase {
 		const orderProducts = await this.getParsedProducts(order);
 
 		this.validateSchema(schema, order);
-		
+
 		if (this.hasErrors()) {
 			return null;
 		}
@@ -23,6 +23,7 @@ export default class CreateUseCase extends AbstractUseCase {
 		order.customerId = orderCustomer;
 		order.products = orderProducts!;
 		// checkout mockado
+		order.status = OrderStatus.RECEBIDO;
 		order.paymentStatus = OrderPaymentStatus.APROVADO;
 
 		// Persistir o pedido e usar POST de Payment para executar o pagamento
@@ -34,7 +35,7 @@ export default class CreateUseCase extends AbstractUseCase {
 			// Usar GET de Users para verificar se o usuário existe, se sim, retornar o cpf informado como referência
 		}
 
-		return undefined;
+		return order.customerId;
 	}
 
 	private async getParsedProducts(order: Order): Promise<number[] | undefined> {
