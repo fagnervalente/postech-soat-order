@@ -6,41 +6,36 @@ import assert from "assert";
 
 const orderRepository = new OrderInMemoryRepository();
 const createUseCase = new CreateUseCase(orderRepository);
-let validOrderCreated: Order | null;
-let invalidOrderCreated: Order | null;
+let orderCreated: Order | null;
 
-Given('inicio a criação do pedido passando dados válidos', async function (int) {
+Given('chamo o método de criar pedido passando um pedido válido', async function () {
     const validOrder: Order = ({
         customerId: "12345678912",
         products: [1, 2, 3]
     });
-    validOrderCreated = await createUseCase.execute(validOrder);
+    orderCreated = await createUseCase.execute(validOrder);
 });
 
-Then('o pedido foi criado com sucesso', function () {
+Then('o resultado deve ser de sucesso', function () {
     return assert.deepStrictEqual(createUseCase.hasErrors(), false);
 });
 
-Then('o id foi gerado', function () {
-    return assert.ok(validOrderCreated?.id);
+Then('deve retornar o pedido com o id', function () {
+    return assert.ok(orderCreated?.id);
 });
 
-Then('os produtos foram salvos', function () {
-    return assert.equal(validOrderCreated?.products.length, 3);
-});
-
-Given('inicio a criação do pedido sem produtos', async function () {
+Given('chamo o método de criar pedido passando um pedido inválido', async function () {
     const invalidOrder: Order = ({
         customerId: "12345678912",
         products: []
     });
-    invalidOrderCreated = await createUseCase.execute(invalidOrder);
+    orderCreated = await createUseCase.execute(invalidOrder);
 });
 
-Then('deve prencher o erro', function () {
-    return assert.ok(createUseCase.hasErrors());
+Then('o resultado deve ser de erro', function () {
+    return assert.deepStrictEqual(createUseCase.hasErrors(), true);
 });
 
-Then('o produto criado deve ser null', function () {
-    return assert.equal(invalidOrderCreated, null);
+Then('o resultado deve retornar null', function () {
+    return assert.equal(orderCreated, null);
 });

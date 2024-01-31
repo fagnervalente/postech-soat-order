@@ -7,4 +7,5 @@ Feature: Deve criar uma order se tudo certo
 
   Scenario: Deve retornar erro ao passar um pedido inválido
     Given chamo o método de criar pedido passando um pedido inválido
-    Then o resultado deve retornar null
+    Then o resultado deve ser de erro
+    And o resultado deve retornar null

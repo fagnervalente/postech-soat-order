@@ -8,30 +8,26 @@ import assert from "assert";
 const mockedOrder: Order = ({
   customerId: "12345678912",
   products: [1, 2, 3],
+  id: "1",
 });
 
 const orderRepository = new OrderInMemoryRepository();
-const createUseCase = new CreateUseCase(orderRepository);
 let getByIdUseCase = new GetByIdUseCase(orderRepository);
 
-Given('inicio a obtenção do pedido existente passando o id como parametro', async function () {
-  let createdOrder: Order | null;
-  createdOrder = await saveMockOrder(mockedOrder);
+Given('inicio a obtenção do pedido passando o id {string} como parametro', async function (string) {
+  if (string === "1") {
+    orderRepository.orders.push(mockedOrder);
+  }
   getByIdUseCase = new GetByIdUseCase(orderRepository);
-  this.result = [await getByIdUseCase.execute(createdOrder?.id || "0")];
+  this.result = [await getByIdUseCase.execute(string)];
 });
 
-Then('o resultado deve ser de sucesso', function () {
+Then('o resultado não deve retornar erros', function () {
   return assert.deepStrictEqual(getByIdUseCase.hasErrors(), false);
 });
 
 Then('deve retornar {int} item', function (int) {
   return assert.equal(this.result.length, int);
-});
-
-Given('inicio a obtenção do pedido passando o id inesistente como parâmetro', async function () {
-  getByIdUseCase = new GetByIdUseCase(orderRepository);
-  this.result = [await getByIdUseCase.execute("0")];
 });
 
 Then('o resultado deve retornar erro', function () {
@@ -41,8 +37,3 @@ Then('o resultado deve retornar erro', function () {
 Then('deve retornar a mensagem de erro {string}', function (string) {
   return assert.deepStrictEqual(getByIdUseCase.getErrors()[0].message, string);
 });
-
-async function saveMockOrder(mock: Order | any): Promise<Order | null> {
-  const created = await createUseCase.execute(mock);
-  return created;
-}
