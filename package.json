@@ -54,7 +54,14 @@
     "exclude": [
       "src/app.ts",
       "src/index.ts",
-      "mongo-data/**/*"
+      "mongo-data/**/*",
+      "tests/**/*",
+      "cucumber.js",
+      "docker-compose.yml",
+      "Dockerfile",
+      "jest.config.js",
+      "package.json",
+      "tsconfig.json"
     ],
     "reporter": [
       "lcov",
