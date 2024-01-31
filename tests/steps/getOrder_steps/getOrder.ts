@@ -1,6 +1,5 @@
 import { Given, Then } from "@cucumber/cucumber";
-import { Order, OrderStatus } from "../../../src/domain/entities/Order";
-import CreateUseCase from "../../../src/app/useCase/CreateUseCase";
+import { Order } from "../../../src/domain/entities/Order";
 import GetByIdUseCase from "../../../src/app/useCase/GetByIdUseCase";
 import OrderInMemoryRepository from '../../utils/repositoryInMemory/OrderInMemoryRepository';
 import assert from "assert";

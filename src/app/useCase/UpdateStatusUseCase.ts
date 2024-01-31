@@ -9,22 +9,22 @@ export default class UpdateStatusUseCase extends AbstractUseCase {
 	}
 
 	async execute(orderId: string, status: OrderStatus): Promise<Order | null> {
-		this.validateOrder(orderId);
+		const order = await this.validateOrder(orderId);
 		this.validateStatus(status);
 
 		if (this.hasErrors()) {
 			return null;
 		}
 
-		const order = await this.orderRepository.findById(orderId);
 		order!.status = status!;
 
 		return await this.orderRepository.save(order!);
 	}
 
-	private async validateOrder(id: string) {
+	private async validateOrder(id: string): Promise<Order | null> {
 		const found = await this.orderRepository.findById(id);
 		if (!found) this.setError({ message: "Order not found" });
+		return found;
 	}
 
 	private async validateStatus(status: OrderStatus | null) {
