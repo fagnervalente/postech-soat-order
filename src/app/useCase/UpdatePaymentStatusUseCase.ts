@@ -2,27 +2,27 @@ import { Order, OrderPaymentStatus } from "@entities/Order";
 import IOrderRepository from "@ports/IOrderRepository";
 import AbstractUseCase from "./AbstractUseCase";
 
-export default class UpdatePaymentStatysUseCase extends AbstractUseCase {
+export default class UpdatePaymentStatusUseCase extends AbstractUseCase {
 
 	constructor(readonly orderRepository: IOrderRepository) {
 		super(orderRepository);
 	}
 
 	async execute(orderId: string, paymentStatus: OrderPaymentStatus): Promise<Order | null> {
-		this.validateOrder(orderId);
+		const order = await this.validateOrder(orderId);
 		this.validateStatus(paymentStatus);
 
 		if (this.hasErrors()) return null;
 
-		const order = await this.orderRepository.findById(orderId);
 		order!.paymentStatus = paymentStatus;
 
 		return await this.orderRepository.save(order!);
 	}
 
-	private async validateOrder(id: string) {
+	private async validateOrder(id: string): Promise<Order | null> {
 		const found = await this.orderRepository.findById(id);
 		if (!found) this.setError({ message: "Order not found" });
+		return found;
 	}
 
 	private async validateStatus(status: OrderPaymentStatus | null) {

@@ -4,7 +4,7 @@ import IOrderRepository from "../ports/IOrderRepository";
 import GetByIdUseCase from "@useCases/GetByIdUseCase";
 import ListUseCase from "@useCases/ListUseCase";
 import UpdateStatusUseCase from "@useCases/UpdateStatusUseCase";
-import UpdatePaymentStatysUseCase from "@useCases/UpdatePaymentStatusUseCase";
+import UpdatePaymentStatusUseCase from "@useCases/UpdatePaymentStatusUseCase";
 
 export default class OrderController {
 	static async checkout(products: Array<number>, cpf: string, orderRepository: IOrderRepository) {
@@ -45,7 +45,7 @@ export default class OrderController {
 	}
 
 	static async updatePaymentStatus(orderId: string, paymentStatus: OrderPaymentStatus, orderRepository: IOrderRepository) {
-		const updatePaymentStatusUseCase = new UpdatePaymentStatysUseCase(orderRepository);
+		const updatePaymentStatusUseCase = new UpdatePaymentStatusUseCase(orderRepository);
 
 		await updatePaymentStatusUseCase.execute(orderId, paymentStatus);
 
