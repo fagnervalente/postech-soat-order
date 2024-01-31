@@ -47,6 +47,7 @@
     "typeorm": "^0.3.17"
   },
   "nyc": {
+    "all": true,
     "include": [
       "src/**/*.ts"
     ],
