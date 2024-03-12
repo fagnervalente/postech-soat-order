@@ -18,12 +18,14 @@
 		"paths": {
 			"@entities/*": ["./src/domain/entities/*"],
 			"@entities": ["./src/domain/entities/index.ts"],
+			"@error": ["./src/domain/error/*"],
 			"@useCases/*": ["./src/app/useCase/*"],
 			"@ports/*": ["./src/ports/*"],
+			"@adapter/": ["./src/adapter/*"],
 			"@controllers/*": ["./src/controllers/*"],
 			"@validation/*": ["./src/app/validation/*"],
 			"@database/*": ["./src/adapter/database/*"],
-			"@http/*": ["./src/adapter/http/*"]
+			"@http/*": ["./src/adapter/http/*"],
 		}
 	},
 	"include": ["src/**/*"],

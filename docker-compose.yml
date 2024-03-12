@@ -18,7 +18,13 @@ services:
       - "${DATABASE_MONGO_PORT}:${DATABASE_MONGO_PORT}"
     volumes:
       - ./mongo-data:/data/db
-
+  rabbitMQ:
+    container_name: rabbitmq:3.13-management
+    image: rabbitMQ
+    restart: always
+    ports: 
+     - "${DATABASE_MONGO_PORT}:${DATABASE_MONGO_PORT}"
+     - 15672:15672
   order-api:
     container_name: self-service-order-api
     build:
@@ -37,4 +43,6 @@ services:
       - DATABASE_MONGO_PORT=${DATABASE_MONGO_PORT}
     depends_on:
       mongo:
+        condition: service_healthy
+      rabbitMQ:
         condition: service_healthy
