@@ -3,6 +3,9 @@ import schema from "@validation/createOrderBody";
 import IOrderRepository from "@ports/IOrderRepository";
 import AbstractUseCase from "./AbstractUseCase";
 import Calculator from "src/domain/rules/Calculator";
+import OrderQueue from "src/adapter/messaging/OrderQueue";
+
+const orderQueue = new OrderQueue;
 
 export default class CreateUseCase extends AbstractUseCase {
 
@@ -26,8 +29,15 @@ export default class CreateUseCase extends AbstractUseCase {
 		order.status = OrderStatus.RECEBIDO;
 		order.paymentStatus = OrderPaymentStatus.APROVADO;
 
-		// Persistir o pedido e usar POST de Payment para executar o pagamento
-		return await this.repository.save(order);
+		const orderCreated = await this.repository.save(order);
+
+		if (orderCreated == null) {
+			return Promise.reject(null);
+		}
+
+		orderQueue.publish({ id: orderCreated.id, customerId: orderCreated.customerId, amount: orderCreated.totalPrice });
+
+		return Promise.resolve(orderCreated);
 	}
 
 	private async getParsedCustomer(order: Order): Promise<string | undefined> {
