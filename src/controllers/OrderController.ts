@@ -5,10 +5,11 @@ import GetByIdUseCase from "@useCases/GetByIdUseCase";
 import ListUseCase from "@useCases/ListUseCase";
 import UpdateStatusUseCase from "@useCases/UpdateStatusUseCase";
 import UpdatePaymentStatusUseCase from "@useCases/UpdatePaymentStatusUseCase";
+import IOrderQueue from "@ports/IOrderQueue";
 
 export default class OrderController {
-	static async checkout(products: Array<number>, cpf: string, orderRepository: IOrderRepository) {
-		const createUseCase = new CreateUseCase(orderRepository);
+	static async checkout(products: Array<number>, cpf: string, orderRepository: IOrderRepository, orderQueue: IOrderQueue) {
+		const createUseCase = new CreateUseCase(orderRepository, orderQueue);
 		const result = await createUseCase.execute({ products, customerId: cpf } as Order);
 
 		if (createUseCase.hasErrors()) throw createUseCase.getErrors();

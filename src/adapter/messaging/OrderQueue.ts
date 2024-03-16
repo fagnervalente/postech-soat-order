@@ -1,8 +1,8 @@
 import IOrderQueue from "@ports/IOrderQueue";
-import Channel from "./messaging";
+import channel from "./messaging";
 
 export default class OrderQueue implements IOrderQueue {
     publish(message: Object): boolean {
-        return Channel.sendToQueue('notification_queue', Buffer.from(JSON.stringify(message)));
+        return channel.sendToQueue(process.env.ORDER_QUEUE_NAME as string, Buffer.from(JSON.stringify(message)));
     }
 }

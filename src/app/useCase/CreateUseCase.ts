@@ -3,13 +3,11 @@ import schema from "@validation/createOrderBody";
 import IOrderRepository from "@ports/IOrderRepository";
 import AbstractUseCase from "./AbstractUseCase";
 import Calculator from "src/domain/rules/Calculator";
-import OrderQueue from "src/adapter/messaging/OrderQueue";
-
-const orderQueue = new OrderQueue;
+import IOrderQueue from "@ports/IOrderQueue";
 
 export default class CreateUseCase extends AbstractUseCase {
 
-	constructor(readonly repository: IOrderRepository) {
+	constructor(readonly repository: IOrderRepository, readonly orderQueue: IOrderQueue) {
 		super(repository);
 	}
 
@@ -27,15 +25,18 @@ export default class CreateUseCase extends AbstractUseCase {
 		order.products = orderProducts!;
 		// checkout mockado
 		order.status = OrderStatus.RECEBIDO;
-		order.paymentStatus = OrderPaymentStatus.APROVADO;
+		order.paymentStatus = OrderPaymentStatus.AGUARDANDO;
 
 		const orderCreated = await this.repository.save(order);
 
 		if (orderCreated == null) {
 			return Promise.reject(null);
 		}
-
-		orderQueue.publish({ id: orderCreated.id, customerId: orderCreated.customerId, amount: orderCreated.totalPrice });
+		try {
+			this.orderQueue.publish({ orderId: orderCreated.id, amount: orderCreated.totalPrice, description: "" });
+		} catch(e) {
+			console.log(e);
+		}
 
 		return Promise.resolve(orderCreated);
 	}

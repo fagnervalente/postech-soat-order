@@ -14,9 +14,9 @@ export async function connectRabbitMQ() {
     }
     try {
         const connection = await amqp.connect(connectOptions);
-        console.log('✅ Connected to RabbitMQ!');
         channel = await connection.createChannel();
         await channel.assertQueue(process.env.ORDER_QUEUE_NAME as string);
+        console.log('✅ Connected to RabbitMQ!');
     } catch (e) {
         console.log("❌ Error on connect RabbitMQ");
         throw ConnectionError.create({ message: "Error on connect with RabbitMQ", stack: e });
