@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import OrderDatabaseRepository from "@database/repository/OrderDatabaseRepository";
 import OrderController from "@controllers/OrderController";
 import { OrderPaymentStatus, OrderStatus } from "@entities/Order";
-import OrderQueue from "../../messaging/OrderQueue";
+import OrderQueue from "../../messaging/OrderQueueOUT";
 
 const orderRepository = new OrderDatabaseRepository();
 const orderQueue = new OrderQueue();

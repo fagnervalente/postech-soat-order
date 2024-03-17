@@ -3,7 +3,9 @@ import express from 'express';
 import * as core from 'express-serve-static-core';
 import HttpAdapter from './adapter/http/HttpAdapter';
 import { AppDataSource } from "./adapter/database/data-source";
-import { connectRabbitMQ } from "./adapter/messaging/messaging";
+import Messaging from "./adapter/messaging/messaging";
+import channel from "./adapter/messaging/messaging";
+
 
 export default class App {
 	private server: core.Express = express();
@@ -13,7 +15,7 @@ export default class App {
 			await this.initDrivenAdapters();
 			await this.initDriverAdapters();
 		} catch (error) {
-			console.log('Error initializing adapters:', error);
+			console.error('Error initializing adapters:', error);
 		}
 	}
 
@@ -27,6 +29,6 @@ export default class App {
 
 	private async initDrivenAdapters(): Promise<void> {
 		await AppDataSource.initialize();
-		await connectRabbitMQ();
+		await Messaging.connect();
 	}
 }

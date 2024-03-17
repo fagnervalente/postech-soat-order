@@ -3,11 +3,11 @@ import schema from "@validation/createOrderBody";
 import IOrderRepository from "@ports/IOrderRepository";
 import AbstractUseCase from "./AbstractUseCase";
 import Calculator from "src/domain/rules/Calculator";
-import IOrderQueue from "@ports/IOrderQueue";
+import IOrderQueueOUT from "@ports/IOrderQueueOUT";
 
 export default class CreateUseCase extends AbstractUseCase {
 
-	constructor(readonly repository: IOrderRepository, readonly orderQueue: IOrderQueue) {
+	constructor(readonly repository: IOrderRepository, readonly orderQueueOUT: IOrderQueueOUT) {
 		super(repository);
 	}
 
@@ -33,7 +33,7 @@ export default class CreateUseCase extends AbstractUseCase {
 			return Promise.reject(null);
 		}
 		try {
-			this.orderQueue.publish({ orderId: orderCreated.id, amount: orderCreated.totalPrice, description: "" });
+			this.orderQueueOUT.publish({ orderId: orderCreated.id, amount: orderCreated.totalPrice, description: "" });
 		} catch(e) {
 			console.log(e);
 		}
