@@ -34,8 +34,10 @@ export default class CreateUseCase extends AbstractUseCase {
 		}
 		try {
 			this.orderQueueOUT.publish({ orderId: orderCreated.id, amount: orderCreated.totalPrice, description: "" });
-		} catch(e) {
-			console.log(e);
+		} catch (e) {
+			console.error(e);
+			this.repository.deleteById(orderCreated.id!)
+			return Promise.reject({ message: "Pedido removido, não foi possível adicionar na fila!" })
 		}
 
 		return Promise.resolve(orderCreated);

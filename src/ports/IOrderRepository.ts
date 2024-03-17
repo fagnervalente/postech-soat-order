@@ -5,4 +5,5 @@ export default interface IOrderRepository {
   list(): Promise<Order[]>;
   update(order: Order): Promise<void>;
   findById(id: string): Promise<Order | null>
+  deleteById(id: string): Promise<void>;
 }
