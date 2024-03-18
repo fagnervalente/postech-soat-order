@@ -31,4 +31,8 @@ export default class OrderDatabaseRepository implements IOrderRepository {
     return await this.orderRepository.findOneBy(id);
   }
 
+  async deleteById(id: string): Promise<void> {
+    await this.orderRepository.delete(id);
+  }
+
 }
