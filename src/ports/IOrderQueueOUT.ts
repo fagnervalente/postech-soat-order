@@ -1,3 +1,4 @@
 export default interface IOrderQueueOUT {
-    publish(message: Object): boolean;
+    publishToCreated(message: Object): boolean;
+    publishOnReadyToPrepare(message: Object): boolean;
 }

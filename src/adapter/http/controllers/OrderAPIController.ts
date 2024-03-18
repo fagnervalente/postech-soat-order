@@ -2,10 +2,10 @@ import { Request, Response } from "express";
 import OrderDatabaseRepository from "@database/repository/OrderDatabaseRepository";
 import OrderController from "@controllers/OrderController";
 import { OrderPaymentStatus, OrderStatus } from "@entities/Order";
-import OrderQueue from "../../messaging/OrderQueueOUT";
+import OrderQueueOUT from "../../messaging/OrderQueueOUT";
 
 const orderRepository = new OrderDatabaseRepository();
-const orderQueue = new OrderQueue();
+const orderQueueOUT = new OrderQueueOUT();
 
 export default class OrderAPIController {
 	async checkout(req: Request, res: Response) {
@@ -19,7 +19,7 @@ export default class OrderAPIController {
 		} */
 		const { products, cpf } = req.body;
 
-		OrderController.checkout(products, cpf, orderRepository, orderQueue)
+		OrderController.checkout(products, cpf, orderRepository, orderQueueOUT)
 			.then((result: any) => {
 				/* #swagger.responses[201] = {
 						schema: { $ref: "#/definitions/OrderCreated" },

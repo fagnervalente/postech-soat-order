@@ -1,8 +1,10 @@
 import 'dotenv/config';
 import amqp from 'amqplib';
 import ConnectionError from '../../domain/error/ConnectionError';
+import OrderQueueIN from './OrderQueueIN';
 
 let channel: any;
+const orderQueueIN = new OrderQueueIN();
 
 export default class Messaging {
 
@@ -18,6 +20,7 @@ export default class Messaging {
             const connection = await amqp.connect(connectOptions);
             channel = await connection.createChannel() as amqp.Channel;
             await channel.assertQueue(process.env.ORDER_QUEUE_NAME as string);
+            orderQueueIN.listen(channel);
             console.log('✅ Connected to RabbitMQ!');
         } catch (e) {
             console.error("❌ Error on connect RabbitMQ");

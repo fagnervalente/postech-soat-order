@@ -8,8 +8,8 @@ import UpdatePaymentStatusUseCase from "@useCases/UpdatePaymentStatusUseCase";
 import IOrderQueueOUT from "@ports/IOrderQueueOUT";
 
 export default class OrderController {
-	static async checkout(products: Array<number>, cpf: string, orderRepository: IOrderRepository, orderQueue: IOrderQueueOUT) {
-		const createUseCase = new CreateUseCase(orderRepository, orderQueue);
+	static async checkout(products: Array<number>, cpf: string, orderRepository: IOrderRepository, orderQueueOUT: IOrderQueueOUT) {
+		const createUseCase = new CreateUseCase(orderRepository, orderQueueOUT);
 		const result = await createUseCase.execute({ products, customerId: cpf } as Order);
 
 		if (createUseCase.hasErrors()) throw createUseCase.getErrors();

@@ -23,7 +23,7 @@ export default class CreateUseCase extends AbstractUseCase {
 
 		order.customerId = orderCustomer;
 		order.products = orderProducts!;
-		// checkout mockado
+		
 		order.status = OrderStatus.RECEBIDO;
 		order.paymentStatus = OrderPaymentStatus.AGUARDANDO;
 
@@ -33,9 +33,9 @@ export default class CreateUseCase extends AbstractUseCase {
 			return Promise.reject(null);
 		}
 		try {
-			this.orderQueueOUT.publish({ orderId: orderCreated.id, amount: orderCreated.totalPrice, description: "" });
+			this.orderQueueOUT.publishToCreated({ orderId: orderCreated.id, amount: orderCreated.totalPrice, description: "" });
 		} catch(e) {
-			console.log(e);
+			console.error(e);
 		}
 
 		return Promise.resolve(orderCreated);
