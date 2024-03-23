@@ -1,26 +1,34 @@
 import 'dotenv/config';
 import amqp from 'amqplib';
 import ConnectionError from '../../domain/error/ConnectionError';
+import OrderQueueIN from './OrderQueueIN';
 
 let channel: any;
+const orderQueueIN = new OrderQueueIN();
 
-export async function connectRabbitMQ() {
-    console.log('🕛 Connecting to RabbitMQ...')
-    const connectOptions: amqp.Options.Connect = {
-        hostname: process.env.RABBITMQ_HOST,
-        username: process.env.RABBITMQ_USER,
-        password: process.env.RABBITMQ_PASSWORD,
-        port: process.env.RABBITMQ_PORT as number | undefined
+export default class Messaging {
+
+    static async connect() {
+        console.log('🕛 Connecting to RabbitMQ...')
+        const connectOptions: amqp.Options.Connect = {
+            hostname: process.env.RABBITMQ_HOST,
+            username: process.env.RABBITMQ_USER,
+            password: process.env.RABBITMQ_PASSWORD,
+            port: process.env.RABBITMQ_PORT as number | undefined
+        }
+        try {
+            const connection = await amqp.connect(connectOptions);
+            channel = await connection.createChannel() as amqp.Channel;
+            await channel.assertQueue(process.env.ORDER_QUEUE_NAME as string);
+            orderQueueIN.listen(channel);
+            console.log('✅ Connected to RabbitMQ!');
+        } catch (e) {
+            console.error("❌ Error on connect RabbitMQ");
+            throw ConnectionError.create({ message: "Error on connect with RabbitMQ", stack: e });
+        }
     }
-    try {
-        const connection = await amqp.connect(connectOptions);
-        console.log('✅ Connected to RabbitMQ!');
-        channel = await connection.createChannel();
-        await channel.assertQueue(process.env.ORDER_QUEUE_NAME as string);
-    } catch (e) {
-        console.log("❌ Error on connect RabbitMQ");
-        throw ConnectionError.create({ message: "Error on connect with RabbitMQ", stack: e });
+
+    static getChannel() {
+        return channel;
     }
 }
-
-export default channel as amqp.Channel;

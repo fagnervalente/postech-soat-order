@@ -1,6 +1,7 @@
 import { Order, OrderPaymentStatus } from "@entities/Order";
 import IOrderRepository from "@ports/IOrderRepository";
 import AbstractUseCase from "./AbstractUseCase";
+import IOrderQueueOUT from "@ports/IOrderQueueOUT";
 
 export default class UpdatePaymentStatusUseCase extends AbstractUseCase {
 
@@ -16,7 +17,11 @@ export default class UpdatePaymentStatusUseCase extends AbstractUseCase {
 
 		order!.paymentStatus = paymentStatus;
 
-		return await this.orderRepository.save(order!);
+		let orderUpdated: Order | null;
+		
+		orderUpdated = await this.orderRepository.save(order!);
+		
+		return Promise.resolve(orderUpdated);
 	}
 
 	private async validateOrder(id: string): Promise<Order | null> {

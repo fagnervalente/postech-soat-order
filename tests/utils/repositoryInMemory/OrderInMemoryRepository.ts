@@ -31,9 +31,12 @@ export default class OrderInMemoryRepository implements OrderRepository {
 		});
 	}
 
-
 	public async findById(id: string): Promise<Order | null> {
 		const found = this.orders.find((order) => order.id == id) ?? null;
 		return found;
+	}
+
+	public async deleteById(id: string): Promise<void> {
+		this.orders = this.orders.filter((order) => order.id != id);
 	}
 }

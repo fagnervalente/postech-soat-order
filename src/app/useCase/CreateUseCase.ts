@@ -3,13 +3,11 @@ import schema from "@validation/createOrderBody";
 import IOrderRepository from "@ports/IOrderRepository";
 import AbstractUseCase from "./AbstractUseCase";
 import Calculator from "src/domain/rules/Calculator";
-import OrderQueue from "src/adapter/messaging/OrderQueue";
-
-const orderQueue = new OrderQueue;
+import IOrderQueueOUT from "@ports/IOrderQueueOUT";
 
 export default class CreateUseCase extends AbstractUseCase {
 
-	constructor(readonly repository: IOrderRepository) {
+	constructor(readonly repository: IOrderRepository, readonly orderQueueOUT: IOrderQueueOUT) {
 		super(repository);
 	}
 
@@ -25,17 +23,22 @@ export default class CreateUseCase extends AbstractUseCase {
 
 		order.customerId = orderCustomer;
 		order.products = orderProducts!;
-		// checkout mockado
+		
 		order.status = OrderStatus.RECEBIDO;
-		order.paymentStatus = OrderPaymentStatus.APROVADO;
+		order.paymentStatus = OrderPaymentStatus.AGUARDANDO;
 
 		const orderCreated = await this.repository.save(order);
 
 		if (orderCreated == null) {
 			return Promise.reject(null);
 		}
-
-		orderQueue.publish({ id: orderCreated.id, customerId: orderCreated.customerId, amount: orderCreated.totalPrice });
+		try {
+			this.orderQueueOUT.publishToCreated({ orderId: orderCreated.id, amount: orderCreated.totalPrice, description: "" });
+		} catch (e) {
+			console.error(e);
+			this.repository.deleteById(orderCreated.id!)
+			return Promise.reject({ message: "Pedido removido, não foi possível adicionar na fila!" })
+		}
 
 		return Promise.resolve(orderCreated);
 	}
