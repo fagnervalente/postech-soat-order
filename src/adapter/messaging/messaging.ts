@@ -20,6 +20,8 @@ export default class Messaging {
             const connection = await amqp.connect(connectOptions);
             channel = await connection.createChannel() as amqp.Channel;
             await channel.assertQueue(process.env.ORDER_QUEUE_NAME as string);
+            await channel.assertQueue(process.env.PAYMENT_QUEUE_NAME as string);
+            await channel.assertQueue(process.env.STATUS_ORDER_QUEUE_NAME as string);
             orderQueueIN.listen(channel);
             console.log('✅ Connected to RabbitMQ!');
         } catch (e) {
